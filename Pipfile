@@ -1,0 +1,47 @@
+# Copyright (C) 2021, Bayerische Motoren Werke Aktiengesellschaft (BMW AG),
+#   Author: Alexander Domin (Alexander.Domin@bmw.de)
+# Copyright (C) 2021, ProFUSION Sistemas e Soluções LTDA,
+#   Author: Leonardo Ramos (leo.ramos@profusion.mobi)
+#
+# SPDX-License-Identifier: MPL-2.0
+#
+# This Source Code Form is subject to the terms of the
+# Mozilla Public License, v. 2.0. If a copy of the MPL was
+# not distributed with this file, You can obtain one at
+# http://mozilla.org/MPL/2.0/.
+
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+pep8 = "*"
+autopep8 = "*"
+flake8 = "*"
+flake8-builtins = "*"
+flake8-colors = "*"
+flake8-comprehensions = "*"
+flake8-deprecated = "*"
+flake8-rst-docstrings = "*"
+flake8-requirements = "*"
+flake8-module-name = "*"
+flake8-tidy-imports = "*"
+flake8-print = "*"
+flake8-quotes = "*"
+flake8-eradicate = "*"
+flake8-import-order = "*"
+ipython = "*"
+pylint = "*"
+mypy = "*"
+nose = "*"
+typing-extensions = "*"
+types-pyyaml = "*"
+
+[packages]
+jinja2 = "*"
+vss-tools = {editable = true, git = "https://github.com/COVESA/vss-tools.git"}
+vss2graphql_schema = {path = "."}
+
+[requires]
+python_version = "3.8"

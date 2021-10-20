@@ -1,0 +1,56 @@
+#!/bin/bash
+
+# Copyright (C) 2021, Bayerische Motoren Werke Aktiengesellschaft (BMW AG),
+#   Author: Alexander Domin (Alexander.Domin@bmw.de)
+# Copyright (C) 2021, ProFUSION Sistemas e Soluções LTDA,
+#   Author: Gustavo Barbieri (barbieri@profusion.mobi)
+#   Author: Garbiel Fernandes (g7fernandes@profusion.mobi)
+#   Author: Leandro Ferlin (leandroferlin@profusion.mobi)
+#   Author: Leonardo Ramos (leo.ramos@profusion.mobi)
+#
+# SPDX-License-Identifier: MPL-2.0
+#
+# This Source Code Form is subject to the terms of the
+# Mozilla Public License, v. 2.0. If a copy of the MPL was
+# not distributed with this file, You can obtain one at
+# http://mozilla.org/MPL/2.0/.
+
+BASE_PATH="$(git rev-parse --show-toplevel)"
+
+# Check if running inside pipenv
+if [ -z "$PIPENV_ACTIVE" ]; then
+    exec pipenv run "$0" "$@"
+fi
+python -V
+
+BASE_PATH="$(git rev-parse --show-toplevel)"
+FLAKE8="flake8"
+
+function test_dependencies {
+    if ! type $FLAKE8 &> /dev/null; then
+      printf "\033[41mPlease install Flake8\033[0m\n"
+      return 1
+    fi
+
+    return 0
+}
+
+function call_flake8 {
+    echo "Linting Python files with Flake8"
+
+    $FLAKE8 --config "$BASE_PATH"/setup.cfg "$BASE_PATH"
+    FLAKE8_EXIT=$?
+
+    if [[ "${FLAKE8_EXIT}" == 0 ]]; then
+      printf "\033[42mFLAKE8 SUCCEEDED\033[0m\n"
+    else
+      printf "\033[41mFLAKE8 FAILED:\033[0m Fix flake8 errors and try again\n"
+      return 1
+    fi
+
+    return 0
+}
+
+
+test_dependencies &&
+call_flake8
