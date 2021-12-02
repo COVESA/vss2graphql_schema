@@ -1,0 +1,22 @@
+{
+    // Assuming that you are cloning the repos on your $HOME/git dir.
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "only specs",
+            "type": "python",
+            "request": "launch",
+            "module": "vss2graphql_schema",
+            "python": "${workspaceFolder}/.venv/bin/python",
+            "args": [
+                "${env:HOME}/git/vehicle_signal_specification/spec/VehicleSignalSpecification.vspec",
+                "--custom-scalars",
+                "--enums",
+                "--range-directive",
+                "--permission-directive",
+                "--subscription-delivery-interval"
+            ],
+            "console": "integratedTerminal"
+        }
+    ]
+}

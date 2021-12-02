@@ -11,7 +11,7 @@
 # http://mozilla.org/MPL/2.0/.
 
 import argparse
-from typing import List, TextIO, Iterable, Mapping
+from typing import List, TextIO, Iterable, Mapping, Any
 
 from vspec.model.vsstree import VSSNode
 
@@ -65,10 +65,10 @@ class TypeGenerator(VSSLeafGenerator):
             children_declarations.append(field)
         return children_declarations
 
-    def _get_extra_vars_from_node(self, node: VSSNode) -> Mapping[str, str]:
+    def _get_extra_vars_from_node(self, node: VSSNode) -> Mapping[str, Any]:
         return {
             'name': get_type_name(node),
-            'description': node.description,
+            'description': get_node_description(node),
         }
 
     @staticmethod

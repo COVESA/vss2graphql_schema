@@ -76,12 +76,12 @@ class SubscriptionGenerator(VSSRootsGenerator):
         directives: List[DirectiveCall] = []
         parameters: List[Parameter] = []
         if has_delivery_interval:
-            parameters.append(Parameter(
-                'deliveryInterval', 'SubscriptionDeliveryInterval',
-                'DELIVERY_INTERVAL_5_SECONDS', is_required=True
-            ))
-
             if has_has_permission_directive:
+                parameters.append(Parameter(
+                    'deliveryInterval', 'SubscriptionDeliveryInterval',
+                    'DELIVERY_INTERVAL_5_SECONDS', is_required=True
+                ))
+
                 has_permission_directive = \
                     get_subscription_has_permission_directive(
                         vss_node, ['DELIVERY_INTERVAL_1_SECOND', 'REALTIME']

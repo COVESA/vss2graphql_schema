@@ -11,12 +11,12 @@
 # http://mozilla.org/MPL/2.0/.
 
 import argparse
-from typing import List, TextIO, Iterable, Mapping, Iterator
+from typing import List, TextIO, Iterable, Mapping, Iterator, Any
 
 from vspec.model.vsstree import VSSNode
 
 from ..layer import Layer
-from ..util import get_type_name
+from ..util import get_type_name, get_node_description
 from ..vss_generators.type_generator import TypeGenerator
 from ..vss_generators.vss_generator import VSSLeafGenerator
 from ..emitters.type_field_emitter import TypeFieldEmitter
@@ -78,8 +78,8 @@ class TypeLayerGenerator(VSSLeafGenerator):
 
         return children_declarations
 
-    def _get_extra_vars_from_node(self, node: VSSNode) -> Mapping[str, str]:
+    def _get_extra_vars_from_node(self, node: VSSNode) -> Mapping[str, Any]:
         return {
             'name': get_type_name(node),
-            'description': node.description,
+            'description': get_node_description(node),
         }

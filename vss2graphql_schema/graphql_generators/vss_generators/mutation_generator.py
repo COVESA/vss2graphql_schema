@@ -22,7 +22,8 @@ from ..emitters.mutation_emitter import MutationEmitter
 from ..model.directive_call import DirectiveCall
 from ..model.field import Field
 from ..model.parameter import Parameter
-from ..util import get_input_name, get_mutation_name, get_type_name
+from ..util import get_input_name, get_mutation_name, get_type_name, \
+    get_node_description
 
 
 class MutationGenerator(VSSRootsGenerator):
@@ -63,7 +64,7 @@ class MutationGenerator(VSSRootsGenerator):
     def field_from_vss_node(vss_node: VSSNode) -> Field:
         field_name = get_mutation_name(vss_node)
         field_type = get_type_name(vss_node)
-        description = ''
+        description = get_node_description(vss_node)
 
         directives: List[DirectiveCall] = []
 

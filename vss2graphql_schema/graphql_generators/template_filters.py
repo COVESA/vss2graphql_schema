@@ -12,5 +12,28 @@
 
 from typing import Mapping, Callable
 
+from .model.description import Description
+
+
+def _is_blank_line(s: str) -> bool:
+    return not bool(len(s.strip('\t \n')))
+
+
+def indent_spaces(s: str, width: int = 1, blank: bool = False) -> str:
+    spaces = '    '
+    res = ''
+    for r in s.split('\n'):
+        if blank and _is_blank_line(r):
+            continue
+        res = f'{res}{spaces*width}{r}\n'
+    return res[:-1]
+
+
+def description_not_empty(description: Description):
+    return not description.empty()
+
+
 all_filters: Mapping[str, Callable] = {
+    'indent_spaces': indent_spaces,
+    'description_not_empty': description_not_empty,
 }

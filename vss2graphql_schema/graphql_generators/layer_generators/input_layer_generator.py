@@ -11,12 +11,12 @@
 # http://mozilla.org/MPL/2.0/.
 
 import argparse
-from typing import TextIO, Iterable, List, Mapping, Iterator
+from typing import TextIO, Iterable, List, Mapping, Iterator, Any
 
 from vspec.model.vsstree import VSSNode, VSSType
 
 from ..layer import Layer
-from ..util import get_input_name
+from ..util import get_input_name, get_node_description
 from ..vss_generators.vss_generator import VSSLeafGenerator
 from ..model.field import Field
 from ..vss_generators.input_generator import InputEmitter, InputGenerator
@@ -76,7 +76,6 @@ class InputLayerGenerator(VSSLeafGenerator):
                         has_range_directive=self.args.range_directive,
                         has_has_permission_directive=self.args.permission_directive,  # noqa:501
                     )
-                    field.description = ''
                     input_declarations.append(field)
 
                 # Add if input child has parent attribute
@@ -87,7 +86,6 @@ class InputLayerGenerator(VSSLeafGenerator):
                         has_has_permission_directive=False,
                     )
                     field.field_type = get_input_name(child)
-                    field.description = ''
 
                     if (child.qualified_name('_')
                             in self.layer.list_node_names):
@@ -103,8 +101,8 @@ class InputLayerGenerator(VSSLeafGenerator):
 
         return input_declarations
 
-    def _get_extra_vars_from_node(self, node: VSSNode) -> Mapping[str, str]:
+    def _get_extra_vars_from_node(self, node: VSSNode) -> Mapping[str, Any]:
         return {
             'name': get_input_name(node),
-            'description': node.description,
+            'description': get_node_description(node),
         }

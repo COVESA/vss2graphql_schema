@@ -11,14 +11,15 @@
 # http://mozilla.org/MPL/2.0/.
 
 import argparse
-from typing import TextIO, Iterable, List, Mapping, Iterator
+from typing import TextIO, Iterable, List, Mapping, Iterator, Any
 
 from vspec.model.vsstree import VSSNode
 
 from .vss_generator import VSSLeafGenerator
 from ..emitters.enum_emitter import EnumFieldEmitter
 from ..model.enum_field import EnumField
-from ..util import str_as_uppercase_variable, node_has_enum, get_enum_name
+from ..util import (str_as_uppercase_variable, node_has_enum,
+                    get_enum_name, get_node_description)
 
 
 class EnumGenerator(VSSLeafGenerator):
@@ -26,6 +27,7 @@ class EnumGenerator(VSSLeafGenerator):
     Generate GraphQL enums from vss.
     Enums are fetched from node.enum (a string formatted as a list of strings).
     '''
+
     def __init__(
             self, output: TextIO, node: Iterable[VSSNode],
             args: argparse.Namespace
@@ -41,10 +43,10 @@ class EnumGenerator(VSSLeafGenerator):
 
         return list(self.fields_from_node(node))
 
-    def _get_extra_vars_from_node(self, node: VSSNode) -> Mapping[str, str]:
+    def _get_extra_vars_from_node(self, node: VSSNode) -> Mapping[str, Any]:
         return {
             'name': get_enum_name(node),
-            'description': node.description,
+            'description': get_node_description(node),
         }
 
     @staticmethod

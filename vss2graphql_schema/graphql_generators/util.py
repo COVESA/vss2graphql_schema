@@ -25,13 +25,14 @@ from vspec.model.vsstree import VSSType
 from .constants import (
     VSS_GQL_TYPE_MAPPING, VSS_GQL_CUSTOM_TYPE_MAPPING, VSS_BRANCH_TYPES
 )
+from .model.description import Description
 from .model.directive_call import RangeDirective, DeprecatedDirective, \
     HasPermissionsDirective, Permission
 
 READER_TABLE = [
     (re.compile(r'^.+\.depl$', re.IGNORECASE), yamlinclude.YamlReader),
 ]
-
+''
 NON_UPPERCASE = re.compile(r'[^A-Z]')
 LOWER_CAMEL_CASE = re.compile(r'[\-_.\s]([a-z])')
 NON_ALPHANUMERIC_WORD = re.compile('[^A-Za-z0-9]+')
@@ -137,14 +138,23 @@ def get_field_type(
         return type_mapping[node.data_type]
 
 
-def get_node_description(node: VSSNode) -> str:
+def get_node_description(node: VSSNode) -> Description:
     '''
     :param node: Node to get description
     :return: Nodes description
     '''
     if node.type in VSS_BRANCH_TYPES:
-        return ''
-    return node.description
+        return Description('')
+
+    description = node.description if node.description else ''
+    unit = str(node.unit) if hasattr(node, 'unit') and node.unit else ''
+    min_value = str(node.min) if hasattr(node, 'min') and node.min else ''
+    max_value = str(node.max) if hasattr(node, 'max') and node.max else ''
+    enum = str(node.enum) if hasattr(node, 'enum') and node.enum else ''
+    return Description(
+        description, unit=unit, min_value=min_value, max_value=max_value,
+        enum=enum
+    )
 
 
 def get_range_directive(node: VSSNode) -> Optional[RangeDirective]:

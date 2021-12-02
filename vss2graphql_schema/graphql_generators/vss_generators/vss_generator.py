@@ -13,7 +13,7 @@
 import argparse
 from abc import ABC, abstractmethod
 from typing import (
-    Generic, Iterable, Optional, Mapping, List, TextIO, Type, Iterator
+    Generic, Iterable, Optional, Mapping, List, TextIO, Type, Iterator, Any
 )
 
 from anytree import LevelOrderIter
@@ -67,7 +67,7 @@ class VSSGenerator(CommonGenerator, Generic[TEntry], ABC):
                     **node_extra_vars,
                 })
 
-    def _get_extra_vars_from_node(self, node: VSSNode) -> Mapping[str, str]:
+    def _get_extra_vars_from_node(self, node: VSSNode) -> Mapping[str, Any]:
         '''
         Get variables from node
         :param node: VSSNode

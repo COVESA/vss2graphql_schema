@@ -12,6 +12,7 @@
 
 from typing import Optional, Sequence
 
+from .description import Description
 from .directive_call import DirectiveCall
 from .parameter import Parameter
 
@@ -23,19 +24,19 @@ class Field:
     '''
     field_name: str
     field_type: str
-    description: Optional[str]
+    description: Optional[Description]
     parameters: Sequence[Parameter]
     directives: Sequence[DirectiveCall]
 
     def __init__(
             self, field_name: str, field_type: str,
-            description: Optional[str] = None,
+            description: Optional[Description] = None,
             parameters: Optional[Sequence[Parameter]] = None,
             directives: Optional[Sequence[DirectiveCall]] = None,
     ) -> None:
         self.field_name = field_name
         self.field_type = field_type
-        self.description = description if description else ''
+        self.description = description if description else Description('')
         self.parameters = parameters if parameters else []
         self.directives = directives if directives else []
 

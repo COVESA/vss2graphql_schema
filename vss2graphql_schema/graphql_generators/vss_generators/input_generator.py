@@ -11,7 +11,7 @@
 # http://mozilla.org/MPL/2.0/.
 
 import argparse
-from typing import TextIO, Iterable, List, Mapping
+from typing import TextIO, Iterable, List, Mapping, Any
 
 from vspec.model.vsstree import VSSNode, VSSType
 
@@ -57,10 +57,10 @@ class InputGenerator(VSSLeafGenerator):
 
         return input_declarations
 
-    def _get_extra_vars_from_node(self, node: VSSNode) -> Mapping[str, str]:
+    def _get_extra_vars_from_node(self, node: VSSNode) -> Mapping[str, Any]:
         return {
             'name': get_input_name(node),
-            'description': node.description,
+            'description': get_node_description(node),
         }
 
     @staticmethod
