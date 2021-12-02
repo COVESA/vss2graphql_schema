@@ -51,6 +51,18 @@ function call_flake8 {
     return 0
 }
 
+check_conflicts() {
+  CONFLICTS=$(git diff --check)
+
+  if [ -n "$CONFLICTS" ]; then
+      printf "\033[41mLeftover conflic markers found:\033[0m\n"
+      echo "$CONFLICTS"
+      echo "You have certainly some conflicts to solve. Solve and commit them amend"
+      echo "if needed."
+      exit 1
+  fi
+}
 
 test_dependencies &&
-call_flake8
+call_flake8 &&
+check_conflicts

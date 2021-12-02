@@ -15,6 +15,8 @@
 # not distributed with this file, You can obtain one at
 # http://mozilla.org/MPL/2.0/.
 
+set -e
+
 # Check if running inside pipenv
 if [ -z "$PIPENV_ACTIVE" ]; then
     exec pipenv run "$0" "$@"
@@ -41,18 +43,33 @@ array_contains () {
 if [ -n "$STAGED_CONFIG_FILES" ]; then
   echo "Changed config files, run tests/lint on all files"
   while read -r line; do
-    STAGED_PY_FILES_ARRAY+=("${line:2}")
-  done <<< "$(find . -path ./.git -prune -o -name '*.py' | grep -v '[.]\(venv\|git\)')"
-  STAGED_PY_FILES="$BASE_PATH"
+    STAGED_PY_FILES_ARRAY+=("$line")
+  done <<< "$(git ls-files | grep -E '^.*\.py$')"
 else
   while read -r line; do
     STAGED_PY_FILES_ARRAY+=("$line")
   done <<< "$(git diff --cached --diff-filter=ACMR --oneline --name-only -- '*.py')"
-  STAGED_PY_FILES="$(git diff --cached --diff-filter=ACMR --oneline --name-only --relative -- '*.py')"
 fi
 
 FLAKE8=$(which flake8)
 MYPY=$(which mypy)
+
+function check_unstaged_modifications {
+  local WARN_FLAG
+  WARN_FLAG=0
+  for F in $(git diff --diff-filter=ACMR --oneline --name-only -- '*.py'); do
+    if array_contains STAGED_PY_FILES_ARRAY "$F"; then
+      printf "\033[0;31m Warning!\033[0m \033[1m Modified file not commited:\033[0m %s\n" "$F"
+      WARN_FLAG=1
+      sleep 2
+    fi
+  done
+  if [[ $WARN_FLAG == 1 ]]; then
+    printf "\033[0m \033[1mMake sure that you are not forgeting to stage the files above!\033[0m\n"
+    echo "Commit process will continue in 5s. Do a Ctrl + C to abort..."
+    sleep 5
+  fi
+}
 
 function test_dependencies {
     if ! type "$FLAKE8" &> /dev/null; then
@@ -69,14 +86,14 @@ function test_dependencies {
 
 # Lint check
 function call_flake8 {
-    if [ -z "$STAGED_PY_FILES" ]; then
+    if [[ ${STAGED_PY_FILES_ARRAY[0]} == '' ]]; then
         echo "No python files changed, nothing to lint with flake8"
         return 0
     fi
 
     echo "Linting Python files with Flake8 ($FLAKE8)"
 
-    $FLAKE8 --config $BASE_PATH/setup.cfg $STAGED_PY_FILES
+    $FLAKE8 --config "$BASE_PATH/setup.cfg" "${STAGED_PY_FILES_ARRAY[@]}"
     FLAKE8_EXIT=$?
 
     if [[ "${FLAKE8_EXIT}" == 0 ]]; then
@@ -91,9 +108,9 @@ function call_flake8 {
 
 
 function run_nose {
-  if [ "$STAGED_PY_FILES" ]; then
+  if [[ ${STAGED_PY_FILES_ARRAY[0]} == '' ]]; then
     echo "Nosetests Python files"
-    if ! pipenv run python -m nose --with-doctest $STAGED_PY_FILES; then
+    if ! pipenv run python -m nose --with-doctest "${STAGED_PY_FILES_ARRAY[@]}"; then
       printf "\033[41mNOSETESTS FAILED\033[0m\n"
       exit 1
     fi
@@ -105,7 +122,7 @@ function run_nose {
 # Typing check
 function call_mypy {
   MYPY_ERRORS=false
-  if [ -z "$STAGED_PY_FILES" ]; then
+  if [[ ${STAGED_PY_FILES_ARRAY[0]} == '' ]]; then
       echo "No python files changed, nothing to lint with mypy"
       return 0
   fi
@@ -121,7 +138,7 @@ function call_mypy {
       if [[ $MYPY_EXIT != *"error"* ]]; then
         printf "\033[42mMYPY SUCCEEDED\033[0m for %s\n" "$PYFILE"
       else
-        $MYPY --config-file $BASE_PATH/setup.cfg "$PYFILE"
+        $MYPY --config-file "$BASE_PATH"/setup.cfg "$PYFILE"
         printf "\033[41mMYPY FOUND PROBLEMS\033[0m for %s$\n" "$PYFILE"
         MYPY_ERRORS=true
       fi
@@ -139,9 +156,10 @@ function call_mypy {
   return 0
 }
 
-cd "$BASE_PATH" || exit
+cd "$BASE_PATH"
 
 test_dependencies &&
 call_mypy &&
 call_flake8 &&
-run_nose
+run_nose &&
+check_unstaged_modifications

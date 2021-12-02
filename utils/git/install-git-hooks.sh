@@ -15,13 +15,18 @@
 # not distributed with this file, You can obtain one at
 # http://mozilla.org/MPL/2.0/.
 
-SELF=`basename $0`
-HOOKS_DIR=`dirname $PWD/$0`
+set -e
 
-for F in $HOOKS_DIR/*; do
-    HOOK_NAME=`basename $F`
-    if [ $SELF != $HOOK_NAME ] && [ -x $F ]; then
-        echo "installing $F as .git/hooks/$HOOK_NAME"
-        ln -sf $F .git/hooks/$HOOK_NAME
+SELF=$(basename "$0")
+HOOKS_DIR=$(dirname "$PWD"/"$0")
+if [ -z "$GIT_DIR" ]; then
+    GIT_DIR=$(git rev-parse --git-common-dir)
+fi
+
+for F in "$HOOKS_DIR"/*; do
+    HOOK_NAME=$(basename "$F")
+    if [ "$SELF" != "$HOOK_NAME" ] && [ -x "$F" ]; then
+        echo "installing $F as $GIT_DIR/hooks/$HOOK_NAME"
+        ln -sf "$F" "$GIT_DIR/hooks/$HOOK_NAME"
     fi
 done
