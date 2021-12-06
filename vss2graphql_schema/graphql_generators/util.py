@@ -11,7 +11,7 @@
 # http://mozilla.org/MPL/2.0/.
 
 import re
-from typing import Optional, TextIO, Sequence
+from typing import Optional, TextIO, Sequence, Union
 
 import yaml
 
@@ -24,7 +24,7 @@ from vspec.model.vsstree import VSSType
 
 from .constants import (
     VSS_GQL_TYPE_MAPPING, VSS_GQL_CUSTOM_TYPE_MAPPING,
-    VSS_BRANCH_TYPES
+    VSS_BRANCH_TYPES, VSS_INTEGER_TYPES, VSS_UNSIGNED_INTEGER_TYPES
 )
 from .model.description import Description
 from .model.directive_call import RangeDirective, DeprecatedDirective, \
@@ -151,7 +151,15 @@ def get_node_description(
 
     description = node.description if node.description else ''
     unit = str(node.unit) if hasattr(node, 'unit') and node.unit else ''
-    min_value = str(node.min) if hasattr(node, 'min') and node.min else ''
+
+    if hasattr(node, 'min') and node.min:
+        min_value = str(node.min)
+    elif (hasattr(node, 'data_type')
+            and node.data_type in VSS_UNSIGNED_INTEGER_TYPES):
+        min_value = '0'
+    else:
+        min_value = ''
+
     max_value = str(node.max) if hasattr(node, 'max') and node.max else ''
     enum = ''
     if hasattr(node, 'enum') and node.enum and print_enum:
@@ -163,14 +171,27 @@ def get_node_description(
     )
 
 
+def str_to_float_or_int(
+    value: str,
+    node: VSSNode
+) -> Optional[Union[float, int]]:
+    if value == '':
+        return None
+    if node.data_type in VSS_INTEGER_TYPES:
+        return int(value)
+    else:
+        return float(value)
+
+
 def get_range_directive(node: VSSNode) -> Optional[RangeDirective]:
     '''
     Generate a RangeDirective from a node
     :param node: Node to check directive
     :return: RangeDirective with boundaries if node has one, else None
     '''
-    range_min = float(node.min) if node.min != '' else None
-    range_max = float(node.max) if node.max != '' else None
+
+    range_min = str_to_float_or_int(node.min, node)
+    range_max = str_to_float_or_int(node.max, node)
 
     if range_min or range_max:
         return RangeDirective(range_min, range_max)

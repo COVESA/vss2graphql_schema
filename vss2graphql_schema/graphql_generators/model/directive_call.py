@@ -10,7 +10,8 @@
 # not distributed with this file, You can obtain one at
 # http://mozilla.org/MPL/2.0/.
 
-from typing import Iterable, Optional, List, Literal, Callable, Sequence
+from typing import (Iterable, Optional, List, Literal,
+                    Callable, Sequence, Union)
 
 from .parameter import Parameter
 
@@ -36,11 +37,12 @@ class RangeDirective(DirectiveCall):
     '''
     Range directive call
     '''
-    min_value: Optional[float]
-    max_value: Optional[float]
+    min_value: Optional[Union[int, float]]
+    max_value: Optional[Union[int, float]]
 
     def __init__(
-            self, min_value: Optional[float], max_value: Optional[float]
+        self, min_value: Optional[Union[int, float]],
+        max_value: Optional[Union[int, float]]
     ) -> None:
         parameters: List[Parameter] = []
         if min_value is not None:

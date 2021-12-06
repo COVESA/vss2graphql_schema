@@ -10,7 +10,7 @@
 # not distributed with this file, You can obtain one at
 # http://mozilla.org/MPL/2.0/.
 
-from typing import Dict
+from typing import Dict, Set
 
 from vspec.model.constants import VSSDataType, VSSType
 
@@ -81,4 +81,19 @@ VSS_BRANCH_TYPES = {VSSType.BRANCH, VSSType.RBRANCH}
 
 VSS_LEAF_TYPES = {
     VSSType.ATTRIBUTE, VSSType.SENSOR, VSSType.ACTUATOR, VSSType.ELEMENT
+}
+
+VSS_UNSIGNED_INTEGER_TYPES: Set[VSSDataType] = {
+    VSSDataType.UINT8,
+    VSSDataType.UINT16,
+    VSSDataType.UINT32,
+    VSSDataType.UINT64
+}
+
+VSS_INTEGER_TYPES: Set[VSSDataType] = {
+    *VSS_UNSIGNED_INTEGER_TYPES,
+    VSSDataType.INT8,
+    VSSDataType.INT16,
+    VSSDataType.INT32,
+    VSSDataType.INT64
 }
