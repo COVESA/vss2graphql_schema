@@ -10,7 +10,7 @@
 {# not distributed with this file, You can obtain one at #}
 {# http://mozilla.org/MPL/2.0/. #}
 {% if description and description | description_not_empty -%}
-{%- from 'description.jinja' import description -%}
-{{- description(description) | indent_spaces(width=1, blank=True) }}
+{%- from 'description.jinja' import print_description -%}
+{{- print_description(description) | indent_spaces(width=1, blank=True) }}
 {% endif %}
 type Mutation {

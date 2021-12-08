@@ -18,6 +18,7 @@ from vspec.model.vsstree import VSSNode
 from .vss_generator import VSSLeafGenerator
 from ..emitters.enum_emitter import EnumFieldEmitter
 from ..model.enum_field import EnumField
+from ..model.description import Description
 from ..util import (str_as_uppercase_variable, node_has_enum,
                     get_enum_name, get_node_description)
 
@@ -46,7 +47,7 @@ class EnumGenerator(VSSLeafGenerator):
     def _get_extra_vars_from_node(self, node: VSSNode) -> Mapping[str, Any]:
         return {
             'name': get_enum_name(node),
-            'description': get_node_description(node),
+            'description': get_node_description(node, not self.args.enums),
         }
 
     @staticmethod
@@ -63,4 +64,6 @@ class EnumGenerator(VSSLeafGenerator):
             for e in enum_list:
                 if e not in enum_seen:
                     enum_seen.add(e)
-                    yield EnumField(str_as_uppercase_variable(e), '')
+                    yield EnumField(
+                        str_as_uppercase_variable(e), Description('')
+                    )

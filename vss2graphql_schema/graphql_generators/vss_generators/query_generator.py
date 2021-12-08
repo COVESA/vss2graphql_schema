@@ -60,7 +60,7 @@ class QueryGenerator(VSSRootsGenerator):
 
         field_name = to_lower_camel_case(vss_node.name)
         field_type = get_field_type(vss_node, custom_scalars, enums)
-        description = get_node_description(vss_node)
+        description = get_node_description(vss_node, not enums)
 
         directives: List[DirectiveCall] = []
         parameters: List[Parameter] = []

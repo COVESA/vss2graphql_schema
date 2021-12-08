@@ -81,5 +81,5 @@ class TypeLayerGenerator(VSSLeafGenerator):
     def _get_extra_vars_from_node(self, node: VSSNode) -> Mapping[str, Any]:
         return {
             'name': get_type_name(node),
-            'description': get_node_description(node),
+            'description': get_node_description(node, not self.args.enums),
         }

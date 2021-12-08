@@ -56,15 +56,15 @@ class MutationGenerator(VSSRootsGenerator):
                 if (node.type == VSSType.ACTUATOR and node.parent is not None
                         and node.parent.qualified_name('_') not in mutations):
                     mutations[node.parent.qualified_name('_')] = \
-                        self.field_from_vss_node(node.parent)
+                        self.field_from_vss_node(node.parent, self.args.enums)
 
         return list(mutations.values())
 
     @staticmethod
-    def field_from_vss_node(vss_node: VSSNode) -> Field:
+    def field_from_vss_node(vss_node: VSSNode, enums: bool = True) -> Field:
         field_name = get_mutation_name(vss_node)
         field_type = get_type_name(vss_node)
-        description = get_node_description(vss_node)
+        description = get_node_description(vss_node, enums)
 
         directives: List[DirectiveCall] = []
 

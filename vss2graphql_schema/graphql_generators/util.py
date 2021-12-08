@@ -23,7 +23,8 @@ from vspec import VSSNode
 from vspec.model.vsstree import VSSType
 
 from .constants import (
-    VSS_GQL_TYPE_MAPPING, VSS_GQL_CUSTOM_TYPE_MAPPING, VSS_BRANCH_TYPES
+    VSS_GQL_TYPE_MAPPING, VSS_GQL_CUSTOM_TYPE_MAPPING,
+    VSS_BRANCH_TYPES
 )
 from .model.description import Description
 from .model.directive_call import RangeDirective, DeprecatedDirective, \
@@ -138,7 +139,9 @@ def get_field_type(
         return type_mapping[node.data_type]
 
 
-def get_node_description(node: VSSNode) -> Description:
+def get_node_description(
+    node: VSSNode, print_enum: bool = False
+) -> Description:
     '''
     :param node: Node to get description
     :return: Nodes description
@@ -150,7 +153,10 @@ def get_node_description(node: VSSNode) -> Description:
     unit = str(node.unit) if hasattr(node, 'unit') and node.unit else ''
     min_value = str(node.min) if hasattr(node, 'min') and node.min else ''
     max_value = str(node.max) if hasattr(node, 'max') and node.max else ''
-    enum = str(node.enum) if hasattr(node, 'enum') and node.enum else ''
+    enum = ''
+    if hasattr(node, 'enum') and node.enum and print_enum:
+        enum = str(node.enum)
+
     return Description(
         description, unit=unit, min_value=min_value, max_value=max_value,
         enum=enum

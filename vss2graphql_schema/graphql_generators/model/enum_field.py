@@ -12,12 +12,14 @@
 
 from typing import Optional
 
+from .description import Description
+
 
 class EnumField:
     value: str
-    description: Optional[str]
+    description: Optional[Description]
 
-    def __init__(self, value: str, description: Optional[str]) -> None:
+    def __init__(self, value: str, description: Optional[Description]) -> None:
         self.value = value
         self.description = description
 

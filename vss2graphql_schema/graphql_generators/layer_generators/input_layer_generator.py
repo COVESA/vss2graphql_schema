@@ -104,5 +104,5 @@ class InputLayerGenerator(VSSLeafGenerator):
     def _get_extra_vars_from_node(self, node: VSSNode) -> Mapping[str, Any]:
         return {
             'name': get_input_name(node),
-            'description': get_node_description(node),
+            'description': get_node_description(node, not self.args.enums),
         }
