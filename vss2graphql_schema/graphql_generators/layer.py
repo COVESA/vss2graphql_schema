@@ -133,6 +133,17 @@ class Layer:
         return False
 
     @staticmethod
+    def entry_has_custom_write(entry: dict) -> bool:
+        '''
+        :param entry: Layer entry to consider (layer tree node)
+        :return: True if entry a _custom write description
+        '''
+        if '_custom' in entry:
+            if 'methods' in entry['_custom']:
+                return 'write' in entry['_custom']['methods']
+        return False
+
+    @staticmethod
     def has_dispatcher_write(entry: dict) -> bool:
         '''
         :param entry: Layer entry to consider (layer tree node)
@@ -152,7 +163,9 @@ class Layer:
     def has_write(entry: dict) -> bool:
         '''
         :param entry: Layer entry to consider (layer tree node)
-        :return: True if entry a _dispatcher or a _francaIDL write description
+        :return: True if entry a _dispatcher, _custom or a _francaIDL write
+            description
         '''
-        return Layer.entry_has_franca_idl_write(
-            entry) or Layer.has_dispatcher_write(entry)
+        return (Layer.entry_has_franca_idl_write(entry)
+                or Layer.has_dispatcher_write(entry)
+                or Layer.entry_has_custom_write(entry))
