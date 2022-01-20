@@ -174,7 +174,7 @@ Array VSS datatypes are translated to GraphQL lists.
 
 ### **Enumerations**
 
-VSS Enumerations are converted to GraphQL Enums the following way:
+VSS `allowed` are converted to GraphQL Enums the following way:
 
 ```yaml
 # VSS file
@@ -182,7 +182,7 @@ VSS Enumerations are converted to GraphQL Enums the following way:
 Vehicle.Body.RefuelPosition:
   datatype: string
   type: attribute
-  enum: ["front_left", "front_right", "middle_left", "middle_right", "rear_left", "rear_right"]
+  allowed: ["front_left", "front_right", "middle_left", "middle_right", "rear_left", "rear_right"]
   description: Location of the fuel cap or charge port
 ```
 

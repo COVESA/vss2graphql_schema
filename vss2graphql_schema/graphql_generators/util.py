@@ -109,12 +109,12 @@ def get_type_name(node: VSSNode):
     return node.qualified_name('_')
 
 
-def node_has_enum(node: VSSNode) -> bool:
+def node_has_allowed(node: VSSNode) -> bool:
     '''
     :param node: Node to check enum
     :return: True if node has VSS enum.
     '''
-    return node.enum and node.enum != ''
+    return hasattr(node, 'allowed') and node.allowed
 
 
 def get_field_type(
@@ -131,7 +131,7 @@ def get_field_type(
     else:
         type_mapping = VSS_GQL_TYPE_MAPPING
 
-    if enums and node_has_enum(node):
+    if enums and node_has_allowed(node):
         return get_enum_name(node)
     if node.type in VSS_BRANCH_TYPES:
         return node.qualified_name('_')
@@ -162,8 +162,8 @@ def get_node_description(
 
     max_value = str(node.max) if hasattr(node, 'max') and node.max else ''
     enum = ''
-    if hasattr(node, 'enum') and node.enum and print_enum:
-        enum = str(node.enum)
+    if node_has_allowed(node) and print_enum:
+        enum = str(node.allowed)
 
     return Description(
         description, unit=unit, min_value=min_value, max_value=max_value,

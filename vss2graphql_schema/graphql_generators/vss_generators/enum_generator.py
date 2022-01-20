@@ -19,14 +19,14 @@ from .vss_generator import VSSLeafGenerator
 from ..emitters.enum_emitter import EnumFieldEmitter
 from ..model.enum_field import EnumField
 from ..model.description import Description
-from ..util import (str_as_uppercase_variable, node_has_enum,
+from ..util import (str_as_uppercase_variable, node_has_allowed,
                     get_enum_name, get_node_description)
 
 
 class EnumGenerator(VSSLeafGenerator):
     '''
     Generate GraphQL enums from vss.
-    Enums are fetched from node.enum (a string formatted as a list of strings).
+    Enums are fetched from node.allowed (a string formatted as a list of strings).
     '''
 
     def __init__(
@@ -37,7 +37,7 @@ class EnumGenerator(VSSLeafGenerator):
 
     def _get_entries(self, node: VSSNode) -> List[EnumField]:
         '''
-        Entry from node.enum split
+        Entry from node.allowed split
         :param node: node to search for enum
         :return: List of EnumFields
         '''
@@ -57,9 +57,9 @@ class EnumGenerator(VSSLeafGenerator):
         :param node: Node to search for the enum
         :return: Next EnumField found in node
         '''
-        if node_has_enum(node):
+        if node_has_allowed(node):
             # Python is handling the conversion from str to list
-            enum_list = [e.upper() for e in list(node.enum)]
+            enum_list = [e.upper() for e in list(node.allowed)]
             enum_seen = set()
             for e in enum_list:
                 if e not in enum_seen:
