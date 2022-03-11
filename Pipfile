@@ -40,8 +40,8 @@ types-pyyaml = "*"
 
 [packages]
 jinja2 = "*"
-vss-tools = {editable = true, git = "https://github.com/COVESA/vss-tools.git"}
-vss2graphql_schema = {path = "."}
+vss-tools = {git = "https://github.com/COVESA/vss-tools.git"}
+vss2graphql_schema = {editable=true, path = "."}
 
 [requires]
 python_version = "3.8"
